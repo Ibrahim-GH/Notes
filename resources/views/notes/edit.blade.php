@@ -7,18 +7,21 @@
 
                 <div class="link_page">
 
-                    <form method="POST" action="{{ route('notes.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('notes.updated',['note'=> $note->id]) }}"
+                          enctype="multipart/form-data">
+                        @method('PUT')
                         @csrf
 
+{{--                        <input type="hidden" id="editId" value="">--}}
                         <div style="padding: 0px 150px; 0px;">
-                            <label for="exampleFormControlTextarea1">Enter The Text Note</label>
-                            <textarea class="form-control" id="content" name="content" rows="3"></textarea>
+                            <label for="editName">Enter The New Text Note</label>
+                            <input class="form-control" value="{{$note->content}}" id="content" name="content">
                         </div>
 
                         <div class="form-row align-items-center">
                             <div class="noteType" class="col-auto my-1" style="margin-top: 20px;">
                                 <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                                <select  class="custom-select mr-sm-2" id="noteType" name="noteType">
+                                <select class="custom-select mr-sm-2" id="noteType" name="noteType">
                                     <option selected>Choose Type</option>
                                     <option value="1">Urgent</option>
                                     <option value="2">Normal</option>
@@ -41,7 +44,7 @@
                             <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
-                    <br />
+                    <br/>
 
                 </div>
             </div>
@@ -55,10 +58,10 @@
             padding: -50px;
         }
 
-.noteType{
-    margin-left: 400px;
+        .noteType {
+            margin-left: 400px;
 
-}
+        }
 
         .image {
             margin-left: 30px;
@@ -69,7 +72,7 @@
             text-align: center;
         }
 
-        .form-row{
+        .form-row {
             margin-top: 30px;
         }
     </style>

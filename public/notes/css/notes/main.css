@@ -1,0 +1,14 @@
+.edit_profile_Page .link_page {
+    border: 1px solid #ccc;
+    padding: 20px 20px 0;
+    margin-top: 40px;
+    box-shadow: 2px 2px 5px 2px #004769;
+    border-radius: 4px;
+    border-top: 5px solid #004769;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 300px;
+    font-size: 15px
+}

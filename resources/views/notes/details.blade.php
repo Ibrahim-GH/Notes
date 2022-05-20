@@ -7,70 +7,49 @@
 
                 <div class="link_page">
 
-                    <form method="POST" action="{{ route('notes.store') }}" enctype="multipart/form-data">
-                        @csrf
 
-                        <div style="padding: 0px 150px; 0px;">
-                            <label for="exampleFormControlTextarea1">Enter The Text Note</label>
-                            <textarea class="form-control" id="content" name="content" rows="3"></textarea>
-                        </div>
+                    <div style="padding: 0px 150px; 0px;">
+                        <h2>
+                            It is Note Content: {{$note->content}}
+                        </h2>
+                    </div>
+                    <br/>
 
-                        <div class="form-row align-items-center">
-                            <div class="noteType" class="col-auto my-1" style="margin-top: 20px;">
-                                <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                                <select  class="custom-select mr-sm-2" id="noteType" name="noteType">
-                                    <option selected>Choose Type</option>
-                                    <option value="1">Urgent</option>
-                                    <option value="2">Normal</option>
-                                    <option value="3">Date</option>
-                                </select>
-                            </div>
+                    <div style="text-align: center;">
+                        <h3>It is Note: Type: {{ $type}}</h3>
+                    </div>
+                    <br/>
 
-                            <label></label>
+                    <div style="text-align: center;">
+                        <h3>It is Note Photo:</h3>
+                        <img style="width: 200px; height: 200px;" src="{{asset($note->image)}}">
 
+                    </div>
+                    <br/>
 
-                            <div class="image">
-                                <label for="exampleFormControlFile1">Select Photo</label>
-                                <input type="file" class="form-control-file" id="image" name="image">
-                            </div>
-                        </div>
-                        <br/>
-
-
-                        <div class="save">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                    <br />
+                    <br/>
 
                 </div>
             </div>
         </div>
     </div>
     <style>
-        textarea {
-            border-radius: 5px;
-            color: blue;
-            /*text-align: center;*/
-            padding: -50px;
+        h3{
+            margin-top: -14px;
+            background: #ecbef0;
+            margin-left: 450px;
+            width: 250px;
         }
 
-.noteType{
-    margin-left: 400px;
-
-}
-
-        .image {
-            margin-left: 30px;
-            margin-top: -10px;
+        h2{
+            margin-top: -14px;
+            background: #ecbef0;
+            margin-left: 300px;
+            width: 250px;
         }
 
-        .save {
+        .row {
             text-align: center;
-        }
-
-        .form-row{
-            margin-top: 30px;
         }
     </style>
 @endsection

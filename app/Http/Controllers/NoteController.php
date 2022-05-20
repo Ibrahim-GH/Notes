@@ -2,85 +2,120 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Models\Note;
-use App\Http\Requests\StoreNoteRequest;
+use App\Repository\NoteRepository;
+use App\Enums\NoteType;
+use App\Models\Note;
+use App\Http\Requests\CreatenoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NoteController extends Controller
 {
+    public $note;
+
+    public function __construct(NoteRepository $note)
+    {
+        $this->note = $note;
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
-        //
+        $notes = $this->note->getNotes();
+//        dd('llllkkk');
+        return View('notes.home', ['notes' => $notes]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function create()
     {
-        //
+        return View('notes.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreNoteRequest  $request
+     * @param \App\Http\Requests\CreatenoteRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreNoteRequest $request)
+    public function store(CreatenoteRequest $request)
     {
-        //
+        $this->note->createNote($request);
+
+        return redirect()->route('notes.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Models\Note  $note
+     * @param \App\Models\Models\Note $note
      * @return \Illuminate\Http\Response
      */
     public function show(Note $note)
     {
-        //
+        $e = NoteType::fromValue($note->type);
+        $type = $e->key;
+        return view('notes.details', ['note'=>$note,'type'=>$type]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Models\Note  $note
+     * @param \App\Models\Models\Note $note
      * @return \Illuminate\Http\Response
      */
     public function edit(Note $note)
     {
-        //
+        return view('notes.edit', compact('note'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateNoteRequest  $request
-     * @param  \App\Models\Models\Note  $note
+     * @param \App\Http\Requests\UpdateNoteRequest $request
+     * @param \App\Models\Models\Note $note
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateNoteRequest $request, Note $note)
+    public function update(Note $note, UpdateNoteRequest $request)
     {
-        //
+//        dd('dd');
+        $this->note->updateNote($note, $request);
+//        dd(';;;;dddd');
+        return redirect()->route('notes.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Models\Note  $note
+     * @param \App\Models\Models\Note $note
      * @return \Illuminate\Http\Response
      */
     public function destroy(Note $note)
     {
-        //
+        $this->note->deleteNote($note);
+        return redirect()->back();
     }
+
+    public function report()
+    {
+        if(Auth::check()) {
+
+            $countUrgent = DB::table('notes')->where('type', 1)->count();
+            $countNormal = DB::table('notes')->where('type', 2)->count();
+            $countDate = DB::table('notes')->where('type', 3)->count();
+
+            $countType = array($countUrgent, $countNormal, $countDate);
+        }
+            return view('notes.report',compact('countType'));
+    }
+
 }

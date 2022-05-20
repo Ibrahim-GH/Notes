@@ -11,7 +11,12 @@ use BenSampo\Enum\Enum;
  */
 final class NoteType extends Enum
 {
-    const Urgent =   1;
-    const Normal =  2;
-    const Date = 3;
+    const Urgent = '1';
+    const Normal = '2';
+    const Date = '3';
+
+    public static function parseDatabase($value)
+    {
+        return (int) $value;
+    }
 }

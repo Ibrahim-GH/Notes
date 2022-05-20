@@ -25,8 +25,6 @@ class UpdatenoteRequest extends FormRequest
     {
         return [
             'content' => 'string|max:500',
-            'type' => ['required', new EnumValue(NoteType::class)],
-            'image'  => 'max"1000|jpg,Png,Gif',
         ];
     }
 }

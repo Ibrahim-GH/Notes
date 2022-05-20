@@ -1,163 +1,186 @@
-{{-- @extends('layouts.master')--}}
-
-{{-- @section('content')--}}
-{{--<div class="container">--}}
-{{--    <div class="row justify-content-center">--}}
-{{--        <div class="col-md-8">--}}
-{{--            <div class="card">--}}
-{{--                <div class="card-header">{{ __('Dashboard') }}</div>--}}
-
-{{--                <div class="card-body">--}}
-{{--                    @if (session('status'))--}}
-{{--                        <div class="alert alert-success" role="alert">--}}
-{{--                            {{ session('status') }}--}}
-{{--                        </div>--}}
-{{--                    @endif--}}
-
-{{--                    {{ __('You are logged in!') }}--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--@endsection--}}
-{{-- @section('content')--}}
-{{--     <div class="container">--}}
-{{--         <div class="row justify-content-center">--}}
-{{--             <div class="col-md-8">--}}
-{{--                 <div class="card">--}}
-{{--                     <div class="card-header">{{ __('Dashboard') }}</div>--}}
-
-{{--                     <div class="card-body">--}}
-{{--                         @if (session('status'))--}}
-{{--                             <div class="alert alert-success" role="alert">--}}
-{{--                                 {{ session('status') }}--}}
-{{--                             </div>--}}
-{{--                         @endif--}}
-
-{{--                         {{ __('You are logged in!') }}--}}
-{{--                     </div>--}}
-{{--                 </div>--}}
-{{--             </div>--}}
-{{--         </div>--}}
-{{--     </div>--}}
-{{-- @endsection--}}
-
-
 @extends('layouts.master')
-<link rel="stylesheet" href="css/notes/main.css">
 
 @section('content')
     <div class="edit_profile_Page">
         <div class="container">
-            <div class="row">
+            <div class="link_page">
 
-                <div class="link_page">
+                @foreach($notes as $note)
+                    <div class="row">
+                        <div class="col-lg-3 margin-bottom-50px" style="margin-top: 10px;">
+                            <img style="width: 100%; height: 90%;"
+                                 src="{{asset($note->image)}}" class="card-img-top">
+                        </div>
 
-                    @foreach($notes as $note)
-                        <div class="row">
-                            <div class="col-lg-4 margin-bottom-50px" id="profile">
-                                <img style="width: 100%; height: 100%;" x="100%" y="100%" dy=".3em"
-                                     src="{{asset($note->image)}}" class="card-img-top">
+                        <div class="col-lg-6 margin-bottom-50px" style="margin-top: 5px;">
+                            {{$note ->content}}
+                        </div>
+
+                        <div class="col-lg-3 margin-bottom-50px">
+                            <div style="margin-top: 10px; ">
+                                <a type="submit" onclick="copyToClipboard()">
+                                    <i class="fa fa-share-alt"> </i>
+                                    share</a>
                             </div>
 
-                            <div class="col-lg-5 margin-bottom-50px">
-                                <p class="card-text">{{$note ->content}}</p>
-                            </div>
+                            <div class="header">
 
-                            <div class="col-lg-3 margin-bottom-50px">
+                                <!-- three dot menu -->
+                                <div class="dropdown" style="margin-top: -25px; margin-left: 80px;">
+                                    <!-- three dots -->
+                                    <ul class="dropbtn icons btn-right showLeft" onclick="showDropdown">
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                    <!-- menu -->
+                                    <div id="myDropdown" class="dropdown-content">
 
-                                <div>
-                                    <a type="submit" onclick="copyToClipboard()">
-                                        <i class="fa fa-share-alt"></i>
-                                        share</a>
+                                        <a type="submit"
+                                           href="{{route('notes.show', ['note' => $note->id])}}"><i
+                                                class="fa fa-info"> </i> Details</a>
 
-                                </div>
-
-                                <div class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Pages
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a href="{{route('notes.show', ['note' => $note->id])}}"
-                                           class="btn btn-success">Details</a>
-
-                                        <a href="{{route('notes.edit',['note'=> $note->id])}}"
-                                           class="btn btn-primary">Edit</a>
-
-
-                                        {{--                                    @auth()--}}
-                                        {{--                                        <a href="{{route('posts.like', ['post' => $post->id])}}"--}}
-                                        {{--                                           class="btn btn-block btn-primary">--}}
-                                        {{--                                            <i class="fa fa-thumbs-up">{{__('message.Like')}}--}}
-                                        {{--                                                ({{$post->likes()->count()}})</i></a>--}}
-                                        {{--                                    @endauth--}}
+                                        <a type="submit"
+                                           href="{{route('notes.edit',['note'=> $note->id])}}"><i
+                                                class="fa fa-edit"> </i> Edit</a>
 
                                         <form method="post"
-                                              action="{{route('notes.destroy',['note' => $note->id])}}">
+                                              action="{{route('notes.delete',['note' => $note->id])}}">
                                             @method('delete')
                                             @csrf
-                                            <button class="btn btn-danger">Delete
+                                            <button type="submit" class="btn btn-danger"
+                                                    style="width: 100px; height: 45px;">
+                                                <i class="fa fa-trash"> </i> Delete
                                             </button>
                                         </form>
-
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
+                <br/>
             </div>
         </div>
+
     </div>
 
     <br/>
     <div style="text-align: center;">
-        <a type="submit" class="btn btn-primary" href="{{route('notes.create')}}">
-            <i class="fa fa-plus"></i>
-            {{ trans('Add Note') }}
+        <a type="button" class="btn btn-primary" href="{{route('notes.create')}}">
+            <span class="fa fa-plus"></span>
+            Add Note
         </a>
     </div>
     <br/>
 
 
-@endsection
+    <link rel="stylesheet" href="css/home.css">
 
-<script>
-    function copyToClipboard(text) {
-        var inputc = document.body.appendChild(document.createElement("input"));
-        var element = document.getElementById("momo").value;
-        inputc.value = window.location.href + '/' + element;
-        inputc.focus();
-        inputc.select();
-        document.execCommand('copy');
-        inputc.parentNode.removeChild(inputc);
-        alert("URL Collection Copied.");
-    }
-</script>
+    <body class="w3-container">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    $(function () {
-        //Take the data from the TR during the event button
-        $('table').on('click', 'button.editingTRbutton', function (ele) {
-            //the <tr> variable is use to set the parentNode from "ele
-            var tr = ele.target.parentNode.parentNode;
 
-            //I get the value from the cells (td) using the parentNode (var tr)
-            var id = tr.cells[0].textContent;
-            var name = tr.cells[1].textContent;
+    <style>
+        .nav-item {
+            margin-left: 50px;
+            margin-top: -30px;
+        }
 
-            //Prefill the fields with the gathered information
-            $('#editName').val(name);
+        .share {
+            text-align: left;
+        }
 
-            $('#editId').val(id);
+        .row {
+            margin-top: 30px;
+            border: 1px solid blue;
+            border-radius: 4px;
+            padding-top: 10px;
+        }
 
-            //If you need to update the form data and change the button link
-            $("form#ModalForm").attr('action', window.location.href + '/update/' + id);
-            $("a#saveModalButton").attr('href', window.location.href + '/update/' + id);
+        .btm a {
+            margin-top: 10px;
+        }
+
+        .image {
+            margin-top: 5px;
+        }
+    </style>
+
+    <script>
+        function copyToClipboard(text) {
+            var inputc = document.body.appendChild(document.createElement("input"));
+            var element = document.getElementById("momo").value;
+            inputc.value = window.location.href + element;
+            inputc.focus();
+            inputc.select();
+            document.execCommand('copy');
+            inputc.parentNode.removeChild(inputc);
+            alert("URL Collection Copied.");
+        }
+    </script>
+
+    <script>
+        $(function () {
+            //Take the data from the TR during the event button
+            $('myDropdown').on('click', 'button.editingTRbutton', function (ele) {
+                //the <tr> variable is use to set the parentNode from "ele
+                var tr = ele.target.parentNode.parentNode;
+
+                //I get the value from the cells (td) using the parentNode (var tr)
+                var id = tr.cells[0].textContent;
+                var name = tr.cells[1].textContent;
+
+                //Prefill the fields with the gathered information
+                $('#editName').val(name);
+
+                $('#editId').val(id);
+
+                //If you need to update the form data and change the button link
+                $("form#ModalForm").attr('action', window.location.href + '/update/' + id);
+                $("a#saveModalButton").attr('href', window.location.href + '/update/' + id);
+            });
         });
-    });
-</script>
+    </script>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("Demo");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
+    </script>
+
+    <script>
+        function changeLanguage(language) {
+            var element = document.getElementById("url");
+            element.value = language;
+            element.innerHTML = language;
+        }
+
+        function showDropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches(".dropbtn")) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains("show")) {
+                        openDropdown.classList.remove("show");
+                    }
+                }
+            }
+        };
+    </script>
+@endsection

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,18 +15,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+//Route::get('/', function () {
+//    return view('home');
+//});
+
+Auth::routes();
+
+//Route::get('/login', [HomeController::class, 'login'])->name('notes.login');
+//Route::get('/register', [HomeController::class, 'register'])->name('notes.register');
+
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', [NoteController::class, 'index'])->name('notes.index');
+
+    Route::get('notes', [NoteController::class, 'index']);
+    Route::get('notes/create', [NoteController::class, 'create'])->name('notes.create');
+    Route::post('notes/store', [NoteController::class, 'store'])->name('notes.store');
+
+    Route::get('notes/{note}/show', [NoteController::class, 'show'])->name('notes.show');
+
+    Route::get('notes/{note}/edit', [NoteController::class, 'edit'])->name('notes.edit');
+    Route::put('notes/update/{note}', [NoteController::class, 'update'])->name('notes.updated');
+
+    Route::delete('notes/delete/{note}', [NoteController::class, 'destroy'])->name('notes.delete');
+
+    Route::get('notes/report', [NoteController::class, 'report'])->name('notes.report');
 });
 
-Auth::routes();
+Route::get('{note}', [NoteController::class, 'show'])->name('notes.show');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::resource('notes', NoteController::class);

@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\NoteType;
+use BenSampo\Enum\Rules\EnumKey;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatenoteRequest extends FormRequest
@@ -25,9 +28,8 @@ class CreatenoteRequest extends FormRequest
     {
         return [
             'content' => 'required|string|max:500',
-            'userId' => 'required|exists:Users,id',
-            'image'  => 'required|max"1000|jpg,Png,Gif',
-            'type' => ['required', new EnumValue(NoteType::class)],
+           'image' => 'required',
+            'noteType' => ['required', new EnumValue(NoteType::class)],
         ];
     }
 }

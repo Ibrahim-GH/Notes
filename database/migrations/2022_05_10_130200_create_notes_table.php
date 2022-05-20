@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\NoteType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,8 +18,9 @@ class CreateNotesTable extends Migration
             $table->bigIncrements('id');
             $table->foreignId('user_id')->constrained();
             $table->string('content');
-            $table->string('type')->default(NoteType::Normal);
+            $table->enum('type',NoteType::getValues())->default(NoteType::Normal);
             $table->string('image');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

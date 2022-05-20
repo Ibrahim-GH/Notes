@@ -2,52 +2,76 @@
 
 namespace App\Repository;
 
-use App\Models\Note;
 use App\Http\Requests\CreatenoteRequest;
 use App\Http\Requests\UpdatenoteRequest;
-use App\Repository\NoteInterface;
-use Illuminate\Support\Facades\Hash;
 
-class NoteRepository extends NoteInterface
+use App\Models\Note;
+use App\Repository\NoteApiInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Traits\MyTraits;
+
+class NoteRepository implements NoteInterface
 {
+    use MyTraits;
+
     public function getNotes()
     {
-        $query = Note::query();
-        $query->where('user_id', Auth::id());
+        $query = DB::table('notes')->select('*')
+            ->where('user_id', Auth::id());
+//        $query = Note::query();
+//        $query->where('user_id', Auth::id());
 
         $perPage = request('perPage', 10);
         $notes = $query->paginate($perPage);
 
-        return notes;
+        return $notes;
     }
 
     public function getNoteById(Note $note)
     {
-        return Note::find($note->id);
+        return $note;
     }
 
+    /**
+     * @param CreatenoteRequest $request
+     * @return mixed
+     */
     public function createNote(CreatenoteRequest $request)
     {
-        $note = new Note;
+        //save Photo with Trait MyTrait
+        $file_name = $this->saveImage($request->image, 'storages/notes');
+
+        $note = new Note();
         $note->content = $request->content;
         $note->user_id = Auth::id();
         $note->type = $request->noteType;
+        $note->image = isset($file_name) ? '/storages/notes/' . $file_name : null;
 
         return $note->save();
     }
 
     public function updateNote(Note $note, UpdatenoteRequest $request)
     {
-        if (!is_null($note->id)) {
-            $note->content = $request->content;
-            $note->type = $request->noteType;
+        //update Photo with Trait MyTrait
+        $file_name = $this->saveImage($request->image, 'storages/notes');
 
-            return $user->save();
+        if (!is_null($note->id) && auth()->check()) {
+            $note->update([
+                "content" => $request->content,
+                "type" => isset($note->id) ? $note->type : $request->noteType,
+                "image" => isset($file_name) ? '/storages/notes/' . $file_name : $note->image
+            ]);
+            return $note;
         }
     }
 
     public function deleteNote(Note $note)
     {
-        return Note::find($note->id)->delete();
+        dd($note);
+        return $note->delete();
     }
+
+
 }
