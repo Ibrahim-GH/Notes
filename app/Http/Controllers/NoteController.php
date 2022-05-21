@@ -27,7 +27,6 @@ class NoteController extends Controller
     public function index()
     {
         $notes = $this->note->getNotes();
-//        dd('llllkkk');
         return View('notes.home', ['notes' => $notes]);
     }
 
@@ -75,7 +74,9 @@ class NoteController extends Controller
      */
     public function edit(Note $note)
     {
-        return view('notes.edit', compact('note'));
+        $e = NoteType::fromValue($note->type);
+        $type = $e->key;
+        return view('notes.edit', ['note'=> $note, 'type'=>$type]);
     }
 
     /**
@@ -87,9 +88,7 @@ class NoteController extends Controller
      */
     public function update(Note $note, UpdateNoteRequest $request)
     {
-//        dd('dd');
         $this->note->updateNote($note, $request);
-//        dd(';;;;dddd');
         return redirect()->route('notes.index');
     }
 

@@ -22,7 +22,7 @@
                             <div class="noteType" class="col-auto my-1" style="margin-top: 20px;">
                                 <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
                                 <select class="custom-select mr-sm-2" id="noteType" name="noteType">
-                                    <option selected>Choose Type</option>
+                                    <option selected>{{$type}}</option>
                                     <option value="1">Urgent</option>
                                     <option value="2">Normal</option>
                                     <option value="3">Date</option>

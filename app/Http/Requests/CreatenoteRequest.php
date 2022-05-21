@@ -28,8 +28,8 @@ class CreatenoteRequest extends FormRequest
     {
         return [
             'content' => 'required|string|max:500',
-           'image' => 'required',
             'noteType' => ['required', new EnumValue(NoteType::class)],
+           'image' => 'required',
         ];
     }
 }

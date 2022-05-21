@@ -18,11 +18,7 @@ class NoteRepository implements NoteInterface
 
     public function getNotes()
     {
-        $query = DB::table('notes')->select('*')
-            ->where('user_id', Auth::id());
-//        $query = Note::query();
-//        $query->where('user_id', Auth::id());
-
+        $query = DB::table('notes')->select('*')->where('user_id', Auth::id());
         $perPage = request('perPage', 10);
         $notes = $query->paginate($perPage);
 
@@ -43,34 +39,36 @@ class NoteRepository implements NoteInterface
         //save Photo with Trait MyTrait
         $file_name = $this->saveImage($request->image, 'storages/notes');
 
-        $note = new Note();
-        $note->content = $request->content;
-        $note->user_id = Auth::id();
-        $note->type = $request->noteType;
-        $note->image = isset($file_name) ? '/storages/notes/' . $file_name : null;
+        $data = array(
+            "content" => $request->content,
+            "user_id" => Auth::id(),
+            "type" => $request->noteType,
+            "image" => isset($file_name) ? '/storages/notes/' . $file_name : null,
+        );
 
-        return $note->save();
+      DB::table('notes')->insert($data);
     }
 
     public function updateNote(Note $note, UpdatenoteRequest $request)
     {
         //update Photo with Trait MyTrait
-        $file_name = $this->saveImage($request->image, 'storages/notes');
+        if (!is_null($request->image))
+            $file_name = $this->saveImage($request->image, 'storages/notes');
 
-        if (!is_null($note->id) && auth()->check()) {
-            $note->update([
+        if (!is_null($note->id)) {
+            $data = array(
                 "content" => $request->content,
                 "type" => isset($note->id) ? $note->type : $request->noteType,
-                "image" => isset($file_name) ? '/storages/notes/' . $file_name : $note->image
-            ]);
-            return $note;
+               "image" => isset($file_name) ? '/storages/notes/' . $file_name : $note->image
+            );
         }
-    }
+
+            DB::table('notes')->update($data);
+        }
 
     public function deleteNote(Note $note)
     {
-        dd($note);
-        return $note->delete();
+        return DB::table('notes')->delete($note);
     }
 
 

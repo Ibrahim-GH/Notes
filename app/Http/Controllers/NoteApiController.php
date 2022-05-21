@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\MyTraits;
 use App\Enums\NoteType;
 use App\Http\Requests\CreatenoteRequest;
 use App\Http\Requests\UpdatenoteRequest;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class NoteApiController extends Controller
 {
+    use MyTraits;
     public $noteApi;
 
     public function __construct(NoteApiRepository $noteApi)
@@ -31,15 +33,6 @@ class NoteApiController extends Controller
         return $this->noteApi->getNotes();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(CreatenoteRequest $request)
-    {
-
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,18 +42,7 @@ class NoteApiController extends Controller
      */
     public function store(CreatenoteRequest $request)
     {
-        //save Photo with Trait MyTrait
-        $file_name = $this->saveImage($request->image, 'storages/notes');
-
-        $note = new Note();
-        $note->content = $request->content;
-//        $note->user_id = Auth::id();
-        $note->type = $request->noteType;
-        $note->image = isset($file_name) ? '/storages/notes/' . $file_name : null;
-
-        return new NoteResource($note);
-
-//        return $this->noteApi->createNote($request);
+        return $this->noteApi->createNote($request);;
     }
 
     /**
@@ -71,20 +53,7 @@ class NoteApiController extends Controller
      */
     public function show(Note $note)
     {
-        $e = NoteType::fromValue($note->type);
-        $type = $e->key;
         return $this->noteApi->getNoteById($note);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -94,11 +63,10 @@ class NoteApiController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatenoteRequest $request, Note $note)
+    public function update(Note $note, UpdatenoteRequest $request)
     {
-        if ($this->noteApi->updateNote($note, $request))
-            return new NoteResource($note);
-    }
+       return $this->noteApi->updateNote($note, $request);
+        }
 
     /**
      * Remove the specified resource from storage.

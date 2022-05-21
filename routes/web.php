@@ -16,20 +16,20 @@ use App\Http\Controllers\NoteController;
 */
 
 
-//Route::get('/', function () {
+// Route::get('/', function () {
 //    return view('home');
-//});
+// });
 
 Auth::routes();
 
-//Route::get('/login', [HomeController::class, 'login'])->name('notes.login');
-//Route::get('/register', [HomeController::class, 'register'])->name('notes.register');
+// Route::get('/login', [HomeController::class, 'login'])->name('notes.login');
+// Route::get('/register', [HomeController::class, 'register'])->name('notes.register');
 
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [NoteController::class, 'index'])->name('notes.index');
 
-    Route::get('notes', [NoteController::class, 'index']);
+    Route::get('/home', [NoteController::class, 'index']);
     Route::get('notes/create', [NoteController::class, 'create'])->name('notes.create');
     Route::post('notes/store', [NoteController::class, 'store'])->name('notes.store');
 
